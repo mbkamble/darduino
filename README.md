@@ -14,8 +14,7 @@ This solution was made based on the
 [Running GUI apps with Docker](http://fabiorehm.com/blog/2014/09/11/running-gui-apps-with-docker/)
 blog post written by Fábio Rehm.
 
-
-## Use the container
+# Use the container
 
 Run this if you want the container to be removed after the session:
 
@@ -27,10 +26,11 @@ Run this if you want the container to be removed after the session:
         --privileged \
         -e DISPLAY=$DISPLAY \
         -v /tmp/.X11-unix:/tmp/.X11-unix \
-        -v /dev/ttyUSB0:/dev/ttyUSB0 \
-        -v $HOME/topics:/topics \
-        tombenke/darduino:v1.6.7 \
-        arduino
+        -v /dev/tty<chooseyours>:/dev/tty<chooseyours> \
+        -v /dev/bus/usb:/dev/bus/usb \
+        -v $HOME/container_data/arduino:/home/developer/Arduino \
+        mbkamble/darduino:latest \
+        [arduino | /bin/bash]
 ```
 
 or just simply run the `./arduino.sh` shell script, which contains the command listed above.
@@ -38,7 +38,16 @@ or just simply run the `./arduino.sh` shell script, which contains the command l
 In case you want to make changes, then start the container without the `--rm` switch, 
 and execute the `commit` and `push` docker commands.
 
-### ESP8266 Board Manager usage
+## Using STM32F103x Arduino Compatible boards
+
+This container is already packaged with the Arduino SAM board which provides the gcc tool chain for Cortex-M3. The STM32 MCU contains the same CPU core. So to compile and upload sketches to the STM32F103 generic boards, install the Arduino_STM32 hardware support files. To do so, just 
+```
+git clone the [Arduino_STM32 repo](https://github.com/mbkamble/Arduino_STM32) to $HOME/container_data/arduino/hardware
+```
+
+There are two binaries (Arduino_STM32/tools/linux/upload-reset and Arduino_STM32/tools/linux/dfu-util/dfu-util) that need to execute successfully to reset and upload firmware through USB. In case they don't executed, you may need to recompile them on your host.
+
+#### ESP8266 Board Manager usage
 
 Starting with 1.6.4, Arduino allows installation of third-party platform packages using Boards Manager.
 

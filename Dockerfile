@@ -4,26 +4,22 @@ ENV HOME /home/developer
 WORKDIR /home/developer
 
 # Replace 1000 with your user / group id
-RUN export uid=1000 gid=1000 && \
-    mkdir -p /home/developer && \
-    mkdir -p /etc/sudoers.d && \
-    echo "developer:x:${uid}:${gid}:Developer,,,:/home/developer:/bin/bash" >> /etc/passwd && \
-    echo "developer:x:${uid}:" >> /etc/group && \
-    echo "developer ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/developer && \
-    chmod 0440 /etc/sudoers.d/developer && \
-    chown ${uid}:${gid} -R /home/developer && \
-    apt-get update \
-	&& apt-get install -y \
-        software-properties-common \
-		wget \
-		openjdk-9-jre \
-		xvfb \
-        xz-utils \
+RUN export uid=1000 gid=1000 \
+    && mkdir -p /home/developer \
+    && mkdir -p /etc/sudoers.d \
+    && echo "developer:x:${uid}:${gid}:Developer,,,:/home/developer:/bin/bash" >> /etc/passwd \
+    && echo "developer:x:${uid}:" >> /etc/group \
+    && echo "developer ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/developer \
+    && chmod 0440 /etc/sudoers.d/developer \
+    && chown ${uid}:${gid} -R /home/developer \
+    && apt-get update \
+    && apt-get install -y software-properties-common wget openjdk-9-jre xvfb xz-utils libusb-1.0-0 \
     && add-apt-repository ppa:ubuntuhandbook1/apps \
     && apt-get update \
-    && apt-get install -y avrdude avrdude-doc \
-	&& apt-get clean \
-	&& rm -rf /var/lib/apt/lists/*
+    && apt-get install -y avrdude \
+	  && apt-get clean \
+    && apt-get autoremove \
+	  && rm -rf /var/lib/apt/lists/*
 
 # Add developer user to the dialout group to be ale to write the serial USB device
 RUN sed "s/^dialout.*/&developer/" /etc/group -i \
@@ -35,6 +31,9 @@ RUN (wget -q -O- https://downloads.arduino.cc/arduino-${ARDUINO_IDE_VERSION}-lin
 	&& ln -s /usr/local/share/arduino-${ARDUINO_IDE_VERSION} /usr/local/share/arduino \
 	&& ln -s /usr/local/share/arduino-${ARDUINO_IDE_VERSION}/arduino /usr/local/bin/arduino)
 
+USER developer
+RUN Xvfb :3 -nolisten tcp -screen :$SCREEN 1280x800x24 & xvfb_pid="$!" \
+  && DISPLAY=:3 arduino --install-boards arduino:sam && kill -9 $xvfb_pid
+
 ENV DISPLAY :1.0
 
-USER developer

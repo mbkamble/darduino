@@ -2,19 +2,19 @@
 # Starts the Arduino IDE using the docker image.
 # see also: ...
 
-#    -v /dev/ttyACM0:/dev/ttyACM0 \
-#    -v /dev/ttyUSB0:/dev/ttyUSB0 \
 docker run \
     -it \
-    --rm \
     --network=host \
     --privileged \
     -e DISPLAY=$DISPLAY \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
-    -v /dev:/dev \
-    -v $HOME/topics:/topics \
-    -v $HOME/topics/arduino:/home/developer/Arduino \
+    --device /dev/ttyACM0:/dev/ttyACM0 \
+    -v /dev/bus/usb:/dev/bus/usb \
+    -v $HOME/container-data/darduino_test:/topics \
+    -v $HOME/container-data/darduino_test/arduino:/home/developer/Arduino \
     --name arduino \
-    tombenke/darduino:v1.8.5 \
-    arduino
+    mbkamble/darduino:latest \
+    /bin/bash
+# Replace /bin/bash with arduino to directly launch the app
+# I prefer to work in command line mode. See https://github.com/arduino/Arduino/blob/master/build/shared/manpage.adoc
 
