@@ -40,12 +40,9 @@ and execute the `commit` and `push` docker commands.
 
 ## Using STM32F103x Arduino Compatible boards
 
-This container is already packaged with the Arduino SAM board which provides the gcc tool chain for Cortex-M3. The STM32 MCU contains the same CPU core. So to compile and upload sketches to the STM32F103 generic boards, install the Arduino_STM32 hardware support files. To do so, just 
-```
-git clone the [Arduino_STM32 repo](https://github.com/mbkamble/Arduino_STM32) to $HOME/container_data/arduino/hardware
-```
+This container is already packaged with the Arduino SAM board which provides the gcc tool chain for Cortex-M3. The STM32 MCU contains the same CPU core. So to compile and upload sketches to the STM32F103 generic boards, install the Arduino_STM32 hardware support files. To do so, just git clone the [Arduino_STM32 repo](https://github.com/mbkamble/Arduino_STM32) to `$HOME/container_data/arduino/hardware`
 
-There are two binaries (Arduino_STM32/tools/linux/upload-reset and Arduino_STM32/tools/linux/dfu-util/dfu-util) that need to execute successfully to reset and upload firmware through USB. In case they don't executed, you may need to recompile them on your host.
+There are two binaries (Arduino_STM32/tools/linux/upload-reset and Arduino_STM32/tools/linux/dfu-util/dfu-util) that need to execute successfully to reset and upload firmware through USB. In case there are errors executing them, you may need to recompile them on your host.
 
 #### ESP8266 Board Manager usage
 
